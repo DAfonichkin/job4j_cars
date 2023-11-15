@@ -6,6 +6,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import ru.job4j.cars.model.User;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,17 +16,18 @@ public class UserRepository {
 
     public Optional<User> create(User user) {
         Session session = sf.openSession();
+        Optional<User> rsl = Optional.empty();
         try {
             session.beginTransaction();
             session.save(user);
             session.getTransaction().commit();
+            rsl = Optional.of(user);
         } catch (Exception e) {
             session.getTransaction().rollback();
+        } finally {
             session.close();
-            return Optional.empty();
         }
-        session.close();
-        return Optional.of(user);
+        return rsl;
     }
 
     public void update(User user) {
@@ -41,8 +43,9 @@ public class UserRepository {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
+        } finally {
+            session.close();
         }
-        session.close();
     }
 
     public void delete(int userId) {
@@ -56,44 +59,69 @@ public class UserRepository {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
+        } finally {
+            session.close();
         }
-        session.close();
     }
 
     public List<User> findAllOrderById() {
         Session session = sf.openSession();
-        Query query = session.createQuery("from User ORDER BY id ");
-        List<User> rsl = query.list();
-        session.close();
+        List<User> rsl = new ArrayList<>();
+        try {
+            Query query = session.createQuery("from User ORDER BY id ");
+            rsl = query.list();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
         return rsl;
     }
 
     public Optional<User> findById(int userId) {
         Session session = sf.openSession();
-        Query<User> query = session.createQuery(
-                "from User as u where u.id = :fId", User.class);
-        query.setParameter("fId", userId);
-        Optional<User> rsl = Optional.of(query.uniqueResult());
-        session.close();
+        Optional<User> rsl = Optional.empty();
+        try {
+            Query<User> query = session.createQuery(
+                    "from User as u where u.id = :fId", User.class);
+            query.setParameter("fId", userId);
+            rsl = query.uniqueResultOptional();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
         return rsl;
     }
 
     public List<User> findByLikeLogin(String key) {
         Session session = sf.openSession();
-        Query query = session.createQuery("from User as u WHERE u.login like :fLogin");
-        query.setParameter("fLogin", key);
-        List<User> rsl = query.list();
-        session.close();
+        List<User> rsl = new ArrayList<>();
+        try {
+            Query query = session.createQuery("from User as u WHERE u.login like :fLogin");
+            query.setParameter("fLogin", key);
+            rsl = query.list();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
         return rsl;
     }
 
     public Optional<User> findByLogin(String login) {
         Session session = sf.openSession();
-        Query<User> query = session.createQuery(
+        Optional<User> rsl = Optional.empty();
+        try {
+            Query<User> query = session.createQuery(
                 "from User as u where u.login = :fLogin", User.class);
         query.setParameter("fLogin", login);
-        Optional<User> rsl = Optional.of(query.uniqueResult());
-        session.close();
+        rsl = query.uniqueResultOptional();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
         return rsl;
     }
 }

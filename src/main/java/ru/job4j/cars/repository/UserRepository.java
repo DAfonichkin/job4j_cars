@@ -68,9 +68,12 @@ public class UserRepository {
         Session session = sf.openSession();
         List<User> rsl = new ArrayList<>();
         try {
+            session.beginTransaction();
             Query query = session.createQuery("from User ORDER BY id ");
             rsl = query.list();
+            session.getTransaction().commit();
         } catch (Exception e) {
+            session.getTransaction().rollback();
             e.printStackTrace();
         } finally {
             session.close();
@@ -82,11 +85,14 @@ public class UserRepository {
         Session session = sf.openSession();
         Optional<User> rsl = Optional.empty();
         try {
+            session.beginTransaction();
             Query<User> query = session.createQuery(
                     "from User as u where u.id = :fId", User.class);
             query.setParameter("fId", userId);
             rsl = query.uniqueResultOptional();
+            session.getTransaction().commit();
         } catch (Exception e) {
+            session.getTransaction().rollback();
             e.printStackTrace();
         } finally {
             session.close();
@@ -98,10 +104,13 @@ public class UserRepository {
         Session session = sf.openSession();
         List<User> rsl = new ArrayList<>();
         try {
+            session.beginTransaction();
             Query query = session.createQuery("from User as u WHERE u.login like :fLogin");
             query.setParameter("fLogin", key);
             rsl = query.list();
+            session.getTransaction().commit();
         } catch (Exception e) {
+            session.getTransaction().rollback();
             e.printStackTrace();
         } finally {
             session.close();
@@ -113,11 +122,14 @@ public class UserRepository {
         Session session = sf.openSession();
         Optional<User> rsl = Optional.empty();
         try {
+            session.beginTransaction();
             Query<User> query = session.createQuery(
-                "from User as u where u.login = :fLogin", User.class);
-        query.setParameter("fLogin", login);
-        rsl = query.uniqueResultOptional();
+                    "from User as u where u.login = :fLogin", User.class);
+            query.setParameter("fLogin", login);
+            rsl = query.uniqueResultOptional();
+            session.getTransaction().commit();
         } catch (Exception e) {
+            session.getTransaction().rollback();
             e.printStackTrace();
         } finally {
             session.close();

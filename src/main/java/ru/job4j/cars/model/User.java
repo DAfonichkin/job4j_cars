@@ -15,11 +15,5 @@ public class User {
     private int id;
     private String login;
     private String password;
-    @ManyToMany
-    @JoinTable(
-            name = "participate",
-            joinColumns = { @JoinColumn(name = "post_id") },
-            inverseJoinColumns = { @JoinColumn(name = "user_id") }
-    )
-    private List<Post> participates = new ArrayList<>();
+
 }

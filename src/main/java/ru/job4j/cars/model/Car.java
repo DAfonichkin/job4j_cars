@@ -30,4 +30,8 @@ public class Car {
 
     @OneToMany(mappedBy = "car")
     private Set<History> history = new HashSet<>();
+
+    @ManyToOne
+    @JoinColumn(name = "brand_id", foreignKey = @ForeignKey(name = "BRAND_ID_FK"))
+    private Brand brand;
 }

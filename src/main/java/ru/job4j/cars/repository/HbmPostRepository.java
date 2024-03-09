@@ -5,6 +5,8 @@ import org.springframework.stereotype.Repository;
 import ru.job4j.cars.model.Brand;
 import ru.job4j.cars.model.Post;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -54,13 +56,14 @@ public class HbmPostRepository implements PostRepository {
     @Override
     public List<Post> getPostsOfLastDay() {
         return crudRepository.query(
-                "from Post WHERE created >= current_date()", Post.class);
+                "from Post WHERE created >= :fdate",  Post.class,
+                Map.of("fdate", LocalDateTime.now().toLocalDate()));
     }
 
     @Override
     public List<Post> getPostsWithPhoto() {
         return crudRepository.query(
-                "from p Post where p.autoPhoto IS NOT NULL", Post.class);
+                "from p Post where p.photo.size != 0", Post.class);
     }
 
     @Override

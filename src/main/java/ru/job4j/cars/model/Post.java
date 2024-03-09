@@ -17,12 +17,15 @@ public class Post {
     private int id;
     private String description;
     private LocalDateTime created;
+
     @ManyToOne
     @JoinColumn(name = "auto_user_id")
     private User user;
+
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "post_id")
     private List<PriceHistory> priceHistory = new ArrayList<>();
+
     @ManyToMany
     @JoinTable(
             name = "participate",
@@ -35,8 +38,8 @@ public class Post {
     @JoinColumn(name = "car_id")
     private Car car;
 
-    @OneToOne
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "photo_id")
-    private Photo photo;
+    private List<Photo> photo = new ArrayList<>();
 
 }

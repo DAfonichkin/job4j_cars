@@ -69,8 +69,8 @@ public class HbmPostRepository implements PostRepository {
     @Override
     public List<Post> getPostsWithBrand(Brand brand) {
         return crudRepository.query(
-                "from p Post where brand = :fBrand", Post.class,
-                Map.of("fBrand", brand)
+                "from p Post where brand.name = :fBrand", Post.class,
+                Map.of("fBrand", brand.getName())
         );
     }
 
